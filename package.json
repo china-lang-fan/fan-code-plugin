@@ -2,7 +2,7 @@
   "name": "fan-lang",
   "displayName": "凡语言支持",
   "description": "凡语言（fan）的语法高亮、代码片段、注释切换与脚本运行支持",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "china-lang-fan",
   "license": "MIT",
   "repository": {
