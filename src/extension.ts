@@ -1,9 +1,16 @@
 import * as vscode from "vscode";
 import { execFileSync } from "node:child_process";
+import {
+  LanguageClient,
+  TransportKind,
+  type LanguageClientOptions,
+  type ServerOptions,
+} from "vscode-languageclient/node";
 
 const TERMINAL_NAME = "凡语言";
 
 let runTerminal: vscode.Terminal | undefined;
+let languageClient: LanguageClient | undefined;
 
 function executablePath(): string {
   return vscode.workspace
@@ -95,6 +102,40 @@ async function startRepl(): Promise<void> {
   terminal.sendText(path, true);
 }
 
+async function startLanguageClient(context: vscode.ExtensionContext): Promise<void> {
+  const config = vscode.workspace.getConfiguration("fan");
+  if (!config.get<boolean>("languageServer.enable", true)) {
+    return;
+  }
+  const command = executablePath();
+  const serverOptions: ServerOptions = {
+    run: { command, args: ["lsp"], transport: TransportKind.stdio },
+    debug: { command, args: ["lsp"], transport: TransportKind.stdio },
+  };
+  const clientOptions: LanguageClientOptions = {
+    documentSelector: [
+      { scheme: "file", language: "fan" },
+      { scheme: "untitled", language: "fan" },
+    ],
+  };
+  languageClient = new LanguageClient(
+    "fan",
+    "凡语言服务器",
+    serverOptions,
+    clientOptions
+  );
+  try {
+    await languageClient.start();
+    context.subscriptions.push({ dispose: () => languageClient?.stop() });
+  } catch {
+    vscode.window
+      .showWarningMessage(
+        `无法启动凡语言服务器（${command} lsp），代码诊断不可用。请检查 fan.executablePath 配置。`
+      )
+      .then(undefined, () => undefined);
+  }
+}
+
 export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     vscode.commands.registerCommand("fan.run", runCurrentFile),
@@ -105,8 +146,10 @@ export function activate(context: vscode.ExtensionContext): void {
       }
     })
   );
+  void startLanguageClient(context);
 }
 
-export function deactivate(): void {
+export async function deactivate(): Promise<void> {
   runTerminal = undefined;
+  await languageClient?.stop();
 }

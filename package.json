@@ -2,7 +2,7 @@
   "name": "fan-lang",
   "displayName": "凡语言支持",
   "description": "凡语言（fan）的语法高亮、代码片段、注释切换与脚本运行支持",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "china-lang-fan",
   "license": "MIT",
   "repository": {
@@ -92,6 +92,11 @@
           "type": "boolean",
           "default": false,
           "description": "运行前是否先清空终端。"
+        },
+        "fan.languageServer.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否启用凡语言服务器（LSP），提供语法错误与分段函数空格等实时诊断。"
         }
       }
     }
@@ -110,5 +115,8 @@
     "@vscode/vsce": "^2.24.0",
     "esbuild": "^0.21.0",
     "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^10.1.2"
   }
 }
