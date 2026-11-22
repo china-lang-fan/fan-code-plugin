@@ -112,11 +112,31 @@ async function startLanguageClient(context: vscode.ExtensionContext): Promise<vo
     run: { command, args: ["lsp"], transport: TransportKind.stdio },
     debug: { command, args: ["lsp"], transport: TransportKind.stdio },
   };
+  const pinyinConfig = config.get<{
+    full?: boolean;
+    initial?: boolean;
+    double?: boolean;
+  }>("pinyinCompletion.schemes", {});
   const clientOptions: LanguageClientOptions = {
     documentSelector: [
       { scheme: "file", language: "fan" },
       { scheme: "untitled", language: "fan" },
     ],
+    initializationOptions: {
+      pinyin: {
+        enable: config.get<boolean>("pinyinCompletion.enable", true),
+        maxSuggest: config.get<number>("pinyinCompletion.maxSuggest", 50),
+        doublePinyinScheme: config.get<string>(
+          "pinyinCompletion.doublePinyinScheme",
+          "ziranma"
+        ),
+        schemes: {
+          full: pinyinConfig.full ?? true,
+          initial: pinyinConfig.initial ?? true,
+          double: pinyinConfig.double ?? true,
+        },
+      },
+    },
   };
   languageClient = new LanguageClient(
     "fan",

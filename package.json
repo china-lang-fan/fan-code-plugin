@@ -2,7 +2,7 @@
   "name": "fan-lang",
   "displayName": "凡语言支持",
   "description": "凡语言（fan）的语法高亮、代码片段、注释切换与脚本运行支持",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "publisher": "china-lang-fan",
   "license": "MIT",
   "repository": {
@@ -97,6 +97,34 @@
           "type": "boolean",
           "default": true,
           "description": "是否启用凡语言服务器（LSP），提供语法错误与分段函数空格等实时诊断。"
+        },
+        "fan.pinyinCompletion.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否启用拼音补全：输入全拼、首字母或双拼即可补全中文关键字与项目符号。"
+        },
+        "fan.pinyinCompletion.maxSuggest": {
+          "type": "number",
+          "default": 50,
+          "minimum": 1,
+          "description": "拼音补全候选的最大数量。"
+        },
+        "fan.pinyinCompletion.schemes": {
+          "type": "object",
+          "default": { "full": true, "initial": true, "double": true },
+          "description": "启用的输入模式：full=全拼，initial=首字母，double=双拼。",
+          "properties": {
+            "full": { "type": "boolean" },
+            "initial": { "type": "boolean" },
+            "double": { "type": "boolean" }
+          }
+        },
+        "fan.pinyinCompletion.doublePinyinScheme": {
+          "type": "string",
+          "default": "ziranma",
+          "enum": ["ziranma", "xiaohe"],
+          "enumDescriptions": ["自然码双拼", "小鹤双拼"],
+          "description": "双拼键位方案。"
         }
       }
     }
