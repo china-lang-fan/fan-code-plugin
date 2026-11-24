@@ -112,11 +112,8 @@ async function startLanguageClient(context: vscode.ExtensionContext): Promise<vo
     run: { command, args: ["lsp"], transport: TransportKind.stdio },
     debug: { command, args: ["lsp"], transport: TransportKind.stdio },
   };
-  const pinyinConfig = config.get<{
-    full?: boolean;
-    initial?: boolean;
-    double?: boolean;
-  }>("pinyinCompletion.schemes", {});
+  const inputMode = config.get<string>("pinyinCompletion.inputMode", "pinyin");
+  const isDouble = inputMode === "double";
   const clientOptions: LanguageClientOptions = {
     documentSelector: [
       { scheme: "file", language: "fan" },
@@ -130,10 +127,22 @@ async function startLanguageClient(context: vscode.ExtensionContext): Promise<vo
           "pinyinCompletion.doublePinyinScheme",
           "ziranma"
         ),
+        engine: config.get<string>("pinyinCompletion.engine", "auto"),
+        rimeLibPath: config.get<string>("pinyinCompletion.rimeLibPath", ""),
+        rimeSharedDataDir: config.get<string>(
+          "pinyinCompletion.rimeSharedDataDir",
+          ""
+        ),
+        rimeUserDataDir: config.get<string>(
+          "pinyinCompletion.rimeUserDataDir",
+          ""
+        ),
+        rimeSchemaId: config.get<string>("pinyinCompletion.rimeSchemaId", ""),
+        // 全拼模式：开全拼+首字母、关双拼；双拼模式：只开双拼。
         schemes: {
-          full: pinyinConfig.full ?? true,
-          initial: pinyinConfig.initial ?? true,
-          double: pinyinConfig.double ?? true,
+          full: !isDouble,
+          initial: !isDouble,
+          double: isDouble,
         },
       },
     },

@@ -2,7 +2,7 @@
   "name": "fan-lang",
   "displayName": "凡语言支持",
   "description": "凡语言（fan）的语法高亮、代码片段、注释切换与脚本运行支持",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "publisher": "china-lang-fan",
   "license": "MIT",
   "repository": {
@@ -109,22 +109,50 @@
           "minimum": 1,
           "description": "拼音补全候选的最大数量。"
         },
-        "fan.pinyinCompletion.schemes": {
-          "type": "object",
-          "default": { "full": true, "initial": true, "double": true },
-          "description": "启用的输入模式：full=全拼，initial=首字母，double=双拼。",
-          "properties": {
-            "full": { "type": "boolean" },
-            "initial": { "type": "boolean" },
-            "double": { "type": "boolean" }
-          }
+        "fan.pinyinCompletion.inputMode": {
+          "type": "string",
+          "default": "pinyin",
+          "enum": ["pinyin", "double"],
+          "enumDescriptions": ["全拼（含首字母）", "双拼"],
+          "description": "拼音补全的使用方式：全拼或双拼。双拼的具体键位由 doublePinyinScheme 决定。"
         },
         "fan.pinyinCompletion.doublePinyinScheme": {
           "type": "string",
           "default": "ziranma",
           "enum": ["ziranma", "xiaohe"],
           "enumDescriptions": ["自然码双拼", "小鹤双拼"],
-          "description": "双拼键位方案。"
+          "description": "双拼键位方案，仅在 inputMode 为 double 时生效。"
+        },
+        "fan.pinyinCompletion.engine": {
+          "type": "string",
+          "default": "auto",
+          "enum": ["auto", "builtin", "rime"],
+          "enumDescriptions": [
+            "自动：检测到 librime 则启用，否则用内置引擎",
+            "内置：仅使用内置纯 Rust 拼音引擎",
+            "Rime：强制尝试加载 librime，缺失时回退内置"
+          ],
+          "description": "拼音补全引擎。librime 为可选动态后端，未安装时不影响内置补全。"
+        },
+        "fan.pinyinCompletion.rimeLibPath": {
+          "type": "string",
+          "default": "",
+          "description": "librime 动态库的显式路径（留空则按平台默认名自动探测，如 librime.so.1 / librime.1.dylib / rime.dll）。"
+        },
+        "fan.pinyinCompletion.rimeSharedDataDir": {
+          "type": "string",
+          "default": "",
+          "description": "Rime shared data 目录（含方案 yaml 与构建产物），留空使用 librime 默认目录。"
+        },
+        "fan.pinyinCompletion.rimeUserDataDir": {
+          "type": "string",
+          "default": "",
+          "description": "Rime user data 目录（用户词库与部署产物），留空使用 librime 默认目录。"
+        },
+        "fan.pinyinCompletion.rimeSchemaId": {
+          "type": "string",
+          "default": "",
+          "description": "启动后切换的 Rime 方案 id（如 pinyin_simp、double_pinyin），留空使用当前方案。"
         }
       }
     }

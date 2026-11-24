@@ -1,5 +1,12 @@
 # 更新日志
 
+## 0.6.0
+
+- 新增可选 librime 引擎：设置 `fan.pinyinCompletion.engine` 为 `auto`/`rime` 后，若系统已安装 librime 则用其大词库提供自由词候选（排在关键字与项目符号之后）
+- 新增设置：`engine`、`rimeLibPath`、`rimeSharedDataDir`、`rimeUserDataDir`、`rimeSchemaId`
+- 新增 `fan.pinyinCompletion.inputMode`（`pinyin` 全拼 / `double` 双拼）选择使用方式，取代原 `schemes` 多开关；`enable` 控制是否开启拼音补全
+- 未安装 librime 时静默回退内置拼音引擎，不影响现有补全
+
 ## 0.5.0
 
 - 拼音补全：输入全拼、首字母或双拼即可补全中文关键字与项目符号（含已导入模块成员）
